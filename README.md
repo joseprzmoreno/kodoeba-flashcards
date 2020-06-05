@@ -41,6 +41,6 @@ The files load process may take a few minutes.
 
 5. Execute api.py
 
-6. In a navigator or Postman, launch: http://localhost:5000/api/randomsentences/0/eng/ell/50
+6. In a browser or Postman, launch: http://localhost:5000/api/randomsentences/0/eng/ell/50 (if you use Google Chrome, I recommend adding extension JSONView).
 
 7. Deactivate virtual environment: deactivate
