@@ -21,18 +21,22 @@ Executing bash file tatoeba.sh will do the job (you'll be required to enter your
 Before executing, edit the line "downloadsdirectory=..." and add your custom directory.
 
 Otherwise, you need to follow these steps:
-- Download sentences.csv and links.csv from tatoeba downloads page: https://downloads.tatoeba.org
+- Download and uncompress sentences.csv and links.csv from tatoeba downloads page: https://downloads.tatoeba.org
 - Using tatoebakrs database, run these two instructions:
 
     LOAD DATA LOCAL INFILE 'sentences.csv' INTO TABLE sentences FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' (id, lang, sentence);
 
     LOAD DATA LOCAL INFILE 'links.csv' INTO TABLE links FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' (src_id, tgt_id);
 
+The files load process may take a few minutes.
+
 4. Activate python virtual environment. In the directory of the app:
     source myenv/bin/activate
 
-   If you don't want to use virtual envionrment, you'll need to install flask and pymysql libraries in Python:
+   You'll need to install flask and pymysql libraries in Python:
+   
    pip3 install flask
+   
    pip3 install pymysql
 
 5. Execute api.py
