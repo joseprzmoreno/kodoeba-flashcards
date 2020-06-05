@@ -30,7 +30,9 @@ Otherwise, you need to follow these steps:
 
 The files load process may take a few minutes.
 
-4. Activate python virtual environment. In the directory of the app:
+4. In shell, run: mysql -u USER -p < db_add_indexes.sql (this adds some indexes to the database).
+
+5. Activate python virtual environment. In the directory of the app:
     source myenv/bin/activate
 
    You'll need to install flask and pymysql libraries in Python:
@@ -39,8 +41,8 @@ The files load process may take a few minutes.
    
    pip3 install pymysql
 
-5. Execute api.py
+6. Execute api.py (through Python Idle; in shell: python api.py, etc.)
 
-6. In a browser or Postman, launch: http://localhost:5000/api/randomsentences/0/eng/ell/50 (if you use Google Chrome, I recommend adding extension JSONView).
+7. In a browser or Postman, launch: http://localhost:5000/api/randomsentences/0/eng/ell/50 (if you use Google Chrome, I recommend adding extension JSONView).
 
-7. Deactivate virtual environment: deactivate
+8. Deactivate virtual environment: deactivate

@@ -14,8 +14,4 @@ CREATE TABLE `links` (
   `tgt_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX idx_lang ON sentences (lang);
-CREATE INDEX idx_src ON links (src_id);
-CREATE INDEX idx_tgt ON links (tgt_id);
-CREATE INDEX idx_src_tgt ON links (src_id, tgt_id);
 
