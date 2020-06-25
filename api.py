@@ -1,7 +1,7 @@
 import flask
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 import pymysql
-import json, random
+import json, random, time
 import configparser
 
 app = flask.Flask(__name__)
@@ -24,35 +24,22 @@ def fetch_all(sql):
     ress = cur.fetchall()
     cur.close()
     return ress
-
-def fetch_one(sql):
-    db = get_db()
-    cur = db.cursor()    
-    cur.execute(sql)
-    res = cur.fetchone()
-    cur.close()
-    return res
-
-def get_number_of_sentences():
-    sql = "SELECT COUNT(*) total FROM sentences"
-    total = fetch_one(sql)["total"]
-    return int(total)
-
-def get_random_sentence_pair(src, tgt, number_of_sentences, remove_ids):
-    random_index = random.randrange(0, number_of_sentences)
-    remove_ids_txt = ",".join(remove_ids)
-    sql = """SELECT src.id srcid, src.sentence srcsentence, tgt.sentence tgtsentence
+    
+def get_random_sentence_pairs(src, tgt, num):
+    sql = """SELECT src.sentence srcsentence, tgt.sentence tgtsentence
 FROM sentences src
-JOIN links l ON src.id = l.src_id
-JOIN sentences tgt ON tgt.id = l.tgt_id
-WHERE src.lang = '{}' AND tgt.lang = '{}' 
+JOIN links l ON src.id = l.src_id 
+JOIN sentences tgt ON l.tgt_id = tgt.id 
+WHERE src.lang = '{}' AND tgt.lang = '{}'
 AND CHAR_LENGTH(src.sentence) <= 70
-AND src.id > {}""".format(src, tgt, random_index)
-    if len(remove_ids) > 0:
-        sql += " AND src.id NOT IN ({})".format(remove_ids_txt)
-    sql += " LIMIT 1"
-    result = fetch_one(sql)
-    return result
+AND CHAR_LENGTH(tgt.sentence) <= 70
+ORDER BY RAND() LIMIT {}
+""".format(src,tgt,num)
+    results = fetch_all(sql)
+    translations = []
+    for result in results:
+        translations.append([result['srcsentence'], result['tgtsentence']])
+    return translations
 
 #From: https://stackoverflow.com/questions/7824101/return-http-status-code-201-in-flask
 class InvalidUsage(Exception):
@@ -86,28 +73,71 @@ def represents_int(s):
 
 @app.route('/', methods=['GET'])
 def home():
-    return '''<h1>Kodoeba flashcards app</h1>'''
+    return render_template('index.html')
 
-@app.route('/api/randomsentences/0/<src>/<tgt>', methods=['GET'])
+@app.route('/api/randomsentences/0/<src>/<tgt>', methods=['GET','POST'])
 def random_sentences_default(src, tgt):
     return random_sentences(src, tgt, 50)
 
-@app.route('/api/randomsentences/0/<src>/<tgt>/<num>', methods=['GET'])
+@app.route('/api/randomsentences/0/<src>/<tgt>/<num>', methods=['GET','POST'])
 def random_sentences(src, tgt, num):
-    if not represents_int(num) or int(num) < 1 or int(num) > 50:
+    if not represents_int(num) or int(num) < 1 or int(num) > 100:
         raise InvalidUsage('Number of sentences must be a number between 1 and 50', status_code=412) 
-    number_of_sentences = get_number_of_sentences()
-    sentence_pairs = []
-    collected_ids = []
-    count = 0
-    while count < int(num):
-        sentence_pair = get_random_sentence_pair(src, tgt, number_of_sentences, collected_ids)
-        if sentence_pair == None:
-            break
-        else:
-            count+=1
-            sentence_pairs.append([sentence_pair["srcsentence"],sentence_pair["tgtsentence"]])
-            collected_ids.append(str(sentence_pair["srcid"]))
+    sentence_pairs = get_random_sentence_pairs(src, tgt, int(num))
     return json.dumps(sentence_pairs, ensure_ascii=False)
 
+@app.route('/get_languages', methods=['GET','POST'])
+def get_languages():
+    with open("languages.json") as file:
+        languages=json.load(file)
+        return json.dumps(languages)
+
+#Will be executed once to have available language list preprocessed.
+@app.route('/get_available_languages_list', methods=['GET','POST'])
+def get_available_languages_list():
+    
+    with open("languages.json") as file:
+        languages=json.load(file)
+
+    f = open('available_languages.json', 'w')
+    f.write("[\n")
+
+    sql = """SELECT src.lang srclang, tgt.lang tgtlang
+FROM sentences src
+JOIN links l ON l.src_id = src.id
+JOIN sentences tgt ON tgt.id = l.tgt_id
+WHERE CHAR_LENGTH(src.sentence) <= 70
+AND CHAR_LENGTH(tgt.sentence) <= 70
+AND src.lang <> tgt.lang
+GROUP BY src.lang, tgt.lang
+HAVING count(tgt.id) >= 100
+ORDER BY src.lang, tgt.lang
+"""
+    lines = fetch_all(sql)
+    
+    for language in languages:
+        language["targets"] = []
+        for line in lines:
+            if language["code"]==line["srclang"]:
+                language["targets"].append(line["tgtlang"])
+    count = 0  
+    for language in languages:
+        targets_txt = '","'.join(language["targets"])
+        f.write('{"code":"' + language["code"] + '","name":"' + language["name"] + '","targets":["' + targets_txt + '"]}')
+        if count < (len(languages) - 1):
+            f.write(",\n")
+        else:
+            f.write("\n")
+        count += 1
+
+    f.write("]")
+    f.close()
+    return json.dumps(languages)
+
+@app.route('/get_available_languages', methods=['GET','POST'])
+def get_available_languages():
+    with open("available_languages.json") as file:
+        languages=json.load(file)
+        return json.dumps(languages)
+    
 app.run()
