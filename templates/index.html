@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Kodoeba Flashcards App</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"/>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+        <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='cards.png') }}"/>
+
+        <script
+            src="https://code.jquery.com/jquery-3.5.1.js"
+            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+        crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <script src="{{ url_for('static', filename='bootstrap-notify.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+
+    </head>
+    <body>
+
+        <nav class="navbar navbar-light bg-light">
+            <div class="container">
+                <span class="navbar-brand mb-0 h1">Kodoeba Flashcards App <font color="grey">(by diegohn)</font></span>
+            </div>
+        </nav>
+
+        <div class="container" id="languages-container">
+            <div class="row">
+                <div class="container">
+
+                    <form>
+                        <br>
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <select class="form-control" id="language1">
+                                    <option value="eng">English</option>
+                                    <option value="spa">Spanish</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <select class="form-control" id="language2">
+                                    <option value="eng">English</option>
+                                    <option value="spa">Spanish</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="accordion-controls">
+            <div class="card">
+
+                <div class="container">
+                    <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Controls (click to show/hide)
+                            </button>
+                        </h5>
+                    </div>
+
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion-controls">
+                        <div class="card-body">
+
+                            <form>
+                                <div class="form-group row">
+                                    <label for="flahscardsNum" class="col-sm-2 col-form-label">Number of flashcards</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" min="1" max="50" class="form-control" id="flashcardsNum" value="50"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-sm-2">Set all transitions automatic</div>
+                                    <div class="col-sm-10">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="allTransitionsAutomatic" checked>
+                                            <label class="form-check-label" for="allTransitionsAutomatic">
+                                                Check this option to set all transitions automatic, at a reading speed of <input type="number" class="form-control" id="autSpeed1" value="71.42" length="5"/> milliseconds per character
+                                                (left flashcard) and <input type="number" class="form-control" id="autSpeed2" value="85.70" length="5"/> milliseconds per character (right flashcard).
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <fieldset class="form-group transition-radio-group">
+                                    <div class="row">
+                                        <legend class="col-form-label col-sm-2 pt-0">Transition between Fl1 and Fl2</legend>
+                                        <div class="col-sm-10">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="trans12" id="trans12Seconds" value="seconds" checked>
+                                                <label class="form-check-label" for="trans12Seconds">
+                                                    Automatically every <input type="number" class="form-control" id="trans12Speed" value="2" checked/> seconds.
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="trans12" id="trans12Button" value="button">
+                                                <label class="form-check-label" for="trans12Button">
+                                                    Manually when pressing button or F key.
+                                                </label>
+                                            </div>
+                                            <div class="form-check disabled">
+                                                <input class="form-check-input" type="radio" name="trans12" id="trans12Instantly" value="instantly">
+                                                <label class="form-check-label" for="trans12Instantly">
+                                                    Instantly
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset class="form-group transition-radio-group">
+                                    <div class="row">
+                                        <legend class="col-form-label col-sm-2 pt-0">Transition between flashcard pairs</legend>
+                                        <div class="col-sm-10">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="transp" id="transpSeconds" value="seconds" checked>
+                                                <label class="form-check-label" for="transpSeconds">
+                                                    Automatically every <input type="number" class="form-control" id="transpSpeed" value="4" checked/> seconds.
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="transp" id="transpButton" value="button">
+                                                <label class="form-check-label" for="transpButton">
+                                                    Manually when pressing button or F key.
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <form>
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    <br>
+                                    <button type="button" class="btn btn-success" id="btn_start">Start</button>
+                                    <button type="button" class="btn btn-danger" id="btn_stop">Stop</button>
+                                    <br>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <div id="loading">
+            <img src="{{ url_for('static', filename='gears.gif') }}"></img>
+            <p><br>Please wait while loading the flashcards...<br>(can take a few seconds)</p>
+        </div>
+
+        <div class="container" id="flashcards-container">
+            <div class="row">
+                <div class="col-sm-6 col-xs-12 flashcard-container" id="left-container">
+                    <div class="flashcard" id="left-flashcard">&gt;</div>
+                    <br>
+                    <div class="transition-box" id="transition-box-1"><button id="btn_next" class="btn">Next (or press 'F')</button></div>
+                    <br>
+                </div>
+                <div class="col-sm-6 col-xs-12 flashcard-container" id="right-container">
+                    <div class="flashcard" id="right-flashcard">&lt;</div>
+                    <br>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" id="allLanguages"/>
+        <br><br><br>
+        <hr>
+        <div id="footer">
+          This is a project made by user
+          <a href="https://tatoeba.org/spa/user/profile/diegohn" target="_blank">diegohn</a>
+          for the
+          <a href="https://blog.tatoeba.org/2020/05/announcing-kodoeba-1.html" target="_blank">Kodoeba</a>
+          challenge of
+          <a href="https://tatoeba.org" target="_blank">Tatoeba</a>
+          in 2020.<br>. Code is stored
+          <a href="https://github.com/joseprzmoreno/kodoeba-flashcards" target="_blank">here</a>.
+          The localstorage of your browser is used for saving your preferences.<br><br>
+        </div>
+    </body>
+</html>
