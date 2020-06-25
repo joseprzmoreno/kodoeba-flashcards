@@ -45,4 +45,13 @@ The files load process may take a few minutes.
 
 7. In a browser or Postman, launch: http://localhost:5000/api/randomsentences/0/eng/ell/50 (if you use Google Chrome, I recommend adding extension JSONView).
 
-8. Deactivate virtual environment: deactivate
+8. In order to use the flashcards web page included, it is necessary to have a pre-loaded list of languages indicating which target languages are available for each one of them.
+
+The file is included, but if you want to generate it, so it is more updated, run: http://localhost:5000/get_available_languages_list (the process can take about ten minutes to complete). 
+
+9. To use the flashcards web page, run: http://localhost:5000 . You can try changing controls, etc. For heavier languages, it can take some seconds to get the sentences. This is a problem 
+
+I am trying to solve. Ordering mysql very large tables by RAND() is very time-consuming.
+
+10. Deactivate virtual environment: deactivate
+
