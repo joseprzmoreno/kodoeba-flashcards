@@ -403,7 +403,7 @@ $(document).ready(function () {
               for (var i = 0; i < sentencePairs.length; i++)
               {
                   var sentencePair = sentencePairs[i];
-                  var transitionBF = Math.ceil(automaticSpeed1 * sentencePair[0].length);
+                  var transitionBF = Math.ceil(automaticSpeed1 * sentencePair.src_sentence.length);
 
                   //set a minimum time
                   if (transitionBF < 600)
@@ -414,7 +414,7 @@ $(document).ready(function () {
                   accumulatedTime += transitionBF;
                   transitionsBetweenFlashcards.push(accumulatedTime);
 
-                  var transitionBP = Math.ceil(automaticSpeed2 * sentencePair[1].length);
+                  var transitionBP = Math.ceil(automaticSpeed2 * sentencePair.tgt_sentence.length);
                   if (transitionBP < 600)
                   {
                       transitionBP = 600;
@@ -428,11 +428,13 @@ $(document).ready(function () {
               for (var i = 0; i < sentencePairs.length; i++)
               {
                   var sentencePair = sentencePairs[i];
-                  eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePair[0]) + "','left-flashcard')}," + (transitionsBetweenPairs[i]) + "));");
-                  eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePair[1]) + "','right-flashcard')}," + (transitionsBetweenFlashcards[i]) + "));");
+                  eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePair.src_sentence) +
+                  "','" + escape(sentencePair.src_translit) + "','left-flashcard')}," + (transitionsBetweenPairs[i]) + "));");
+                  eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePair.tgt_sentence) +
+                  "','" + escape(sentencePair.tgt_translit) + "','right-flashcard')}," + (transitionsBetweenFlashcards[i]) + "));");
                   if (i < (sentencePairs.length - 1))
                   {
-                      eval("timeouts.push(setTimeout(function(){showFlashcard('','right-flashcard')}," + (transitionsBetweenPairs[i + 1]) + "));");
+                      eval("timeouts.push(setTimeout(function(){showFlashcard('','','right-flashcard')}," + (transitionsBetweenPairs[i + 1]) + "));");
                   }
               }
               timeouts.push(setTimeout(function ()
@@ -457,12 +459,12 @@ $(document).ready(function () {
                 {
                     if (nextPlace == "left-flashcard")
                     {
-                          showFlashcard(escape(sentencePairs[nextPair][0]), 'left-flashcard');
+                          showFlashcard(escape(sentencePairs[nextPair].src_sentence), escape(sentencePairs[nextPair].src_translit), 'left-flashcard');
                           $('#right-flashcard').html('');
                     }
                     else
                     {
-                        showFlashcard(escape(sentencePairs[nextPair][1]), 'right-flashcard');
+                        showFlashcard(escape(sentencePairs[nextPair].tgt_sentence), escape(sentencePairs[nextPair].tgt_translit), 'right-flashcard');
                         nextPair++;
                     }
                     nextPlace = changePlace();
@@ -487,9 +489,9 @@ $(document).ready(function () {
                 for (var i = 0; i < sentencePairs.length; i++)
                 {
                     var sentencePair = sentencePairs[i];
-                    eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePair[0]) + "','left-flashcard')}," + ((TBPSeconds) * i * 1000) + "));");
-                    eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePair[1]) + "','right-flashcard')}," + (((TBPSeconds) * i * 1000) + TBFSeconds * 1000) + "));");
-                    eval("timeouts.push(setTimeout(function(){showFlashcard('','right-flashcard')}," + (((TBPSeconds) * i * 1000) + TBPSeconds * 1000) + "));");
+                    eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePair.src_sentence) + "','" + escape(sentencePair.src_translit) + "','left-flashcard')}," + ((TBPSeconds) * i * 1000) + "));");
+                    eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePair.tgt_sentence) + "','" + escape(sentencePair.tgt_translit) + "','right-flashcard')}," + (((TBPSeconds) * i * 1000) + TBFSeconds * 1000) + "));");
+                    eval("timeouts.push(setTimeout(function(){showFlashcard('','','right-flashcard')}," + (((TBPSeconds) * i * 1000) + TBPSeconds * 1000) + "));");
                 }
                 timeouts.push(setTimeout(function ()
                 {
@@ -518,12 +520,12 @@ $(document).ready(function () {
                     {
                         if (nextPlace == "left-flashcard")
                         {
-                            showFlashcard(escape(sentencePairs[nextPair][0]), 'left-flashcard');
+                            showFlashcard(escape(sentencePairs[nextPair].src_sentence), escape(sentencePairs[nextPair].src_translit),'left-flashcard');
                             $('#right-flashcard').html('');
                         }
                         else
                         {
-                            showFlashcard(escape(sentencePairs[nextPair][1]), 'right-flashcard');
+                            showFlashcard(escape(sentencePairs[nextPair].tgt_sentence), escape(sentencePairs[nextPair].tgt_translit), 'right-flashcard');
                             nextPair++;
                         }
                         nextPlace = changePlace();
@@ -548,8 +550,8 @@ $(document).ready(function () {
                     }
                     else
                     {
-                        showFlashcard(escape(sentencePairs[nextPair][0]), 'left-flashcard');
-                        showFlashcard(escape(sentencePairs[nextPair][1]), 'right-flashcard');
+                        showFlashcard(escape(sentencePairs[nextPair].src_sentence), escape(sentencePairs[nextPair].src_translit), 'left-flashcard');
+                        showFlashcard(escape(sentencePairs[nextPair].tgt_sentence), escape(sentencePairs[nextPair].tgt_translit), 'right-flashcard');
                         nextPair++;
                     }
 
@@ -577,9 +579,9 @@ $(document).ready(function () {
                             clearTimeout(timeouts[i]);
                         }
                         timeouts = [];
-                        showFlashcard(escape(sentencePairs[nextPair][0]), 'left-flashcard');
+                        showFlashcard(escape(sentencePairs[nextPair].src_sentence), escape(sentencePairs[nextPair].src_translit), 'left-flashcard');
                         $('#right-flashcard').html('');
-                        eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePairs[nextPair][1]) + "','right-flashcard')}," + (TBFSeconds * 1000) + "));");
+                        eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePairs[nextPair].tgt_sentence) + "','" + escape(sentencePairs[nextPair].tgt_translit) + "','right-flashcard')}," + (TBFSeconds * 1000) + "));");
                         nextPair++;
                     }
 
@@ -594,8 +596,8 @@ $(document).ready(function () {
                 {
                     $('#btn_next').prop('disabled', false);
                     $('#transition-box-1').show();
-                    eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePairs[i][0]) + "','left-flashcard'),nextPair++}," + ((TBPSeconds) * i * 1000) + "));");
-                    eval("timeouts.push(setTimeout(function(){showFlashcard('','right-flashcard')}," + (((TBPSeconds) * i * 1000) + TBPSeconds * 1000) + "));");
+                    eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePairs[i].src_sentence) + "','" + escape(sentencePairs[i].src_translit) + "','left-flashcard'),nextPair++}," + ((TBPSeconds) * i * 1000) + "));");
+                    eval("timeouts.push(setTimeout(function(){showFlashcard('','','right-flashcard')}," + (((TBPSeconds) * i * 1000) + TBPSeconds * 1000) + "));");
 
                 }
                 timeouts.push(setTimeout(function ()
@@ -609,7 +611,7 @@ $(document).ready(function () {
                     e.preventDefault();
                     if (nextPair >= 0)
                     {
-                        showFlashcard(escape(sentencePairs[nextPair][1]), 'right-flashcard');
+                        showFlashcard(escape(sentencePairs[nextPair].tgt_sentence), escape(sentencePairs[nextPair].tgt_translit) , 'right-flashcard');
                     }
 
                 });
@@ -618,9 +620,16 @@ $(document).ready(function () {
         }
     }
 
-    function showFlashcard(txt, whichFlashcard)
+    function showFlashcard(txt, translit, whichFlashcard)
     {
-        $('#' + whichFlashcard).html(txt);
+        var html = "<div class='sentence'>" + txt + "</div>";
+
+        if (translit !== '')
+        {
+          html += "<div class='transliteration'>" + translit + "</div>";
+        }
+
+        $('#' + whichFlashcard).html(html);
 
         if (detectIfMustReadAloud())
         {

@@ -3,6 +3,7 @@ from flask import request, jsonify, render_template
 import pymysql
 import json, random, time
 import configparser
+from transliterations import *
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -38,7 +39,14 @@ ORDER BY RAND() LIMIT {}
     results = fetch_all(sql)
     translations = []
     for result in results:
-        translations.append([result['srcsentence'], result['tgtsentence']])
+        src_translit = ""
+        tgt_translit = ""
+        if has_transliteration(src):
+            src_translit = get_transliteration(src,result["srcsentence"])
+        if has_transliteration(tgt):
+            tgt_translit = get_transliteration(tgt,result["tgtsentence"])
+        translations.append({"src_sentence":result['srcsentence'], "tgt_sentence":result['tgtsentence'],
+                             "src_translit":src_translit, "tgt_translit":tgt_translit})
     return translations
 
 #From: https://stackoverflow.com/questions/7824101/return-http-status-code-201-in-flask

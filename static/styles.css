@@ -72,14 +72,24 @@ display: none;
 text-align: center;
 }
 
-
 .navbar
 {
   border-top: 20px !important;
   background-color: oldlace !important;
 }
 
+.sentence
+{
+   font-size: 30px;
+}
+
 .transition-box
 {
     text-align: center;
+}
+
+.transliteration
+{
+   font-size: 24px;
+   color: grey;
 }
