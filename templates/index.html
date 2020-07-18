@@ -79,8 +79,8 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="allTransitionsAutomatic" checked>
                                             <label class="form-check-label" for="allTransitionsAutomatic">
-                                                Check this option to set all transitions automatic, at a reading speed of <input type="number" class="form-control" id="autSpeed1" value="71.42" length="5"/> milliseconds per character
-                                                (left flashcard) and <input type="number" class="form-control" id="autSpeed2" value="85.70" length="5"/> milliseconds per character (right flashcard).
+                                                Check this option to set all transitions automatic, at a reading speed of x milliseconds per character (left flashcard): <input type="number" class="form-control" id="autSpeed1" value="71.42" style="width:200px"/>
+                                                and x milliseconds per character (right flashcard): <input type="number" class="form-control" id="autSpeed2" value="85.70" style="width:200px"/>
                                             </label>
                                         </div>
                                     </div>
@@ -136,13 +136,14 @@
                                     <div class="col-sm-2">Text-to-speech</div>
                                     <div class="col-sm-10">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="useTts" checked>
+                                            <input class="form-check-input" type="checkbox" name="useTts" id="useTts" checked>
                                             <label class="form-check-label" for="useTts">
                                                 Read sentences aloud (for available languages; valid only for Google Chrome).
                                                 <i>(This option overrides automatic reading speed. You may have to adjust manual reading speed).</i>
                                             </label>
-                                            <br>TTS reading speed rate  (left flashcard): <input class="form-control" type="number" id="ttsSpeedSrc" name="ttsSpeedSrc" min="0.30" max="4.0" step="0.1" value="1"/>
-                                            <br>TTS reading speed rate (right flashcard): <input class="form-control" type="number" id="ttsSpeedTgt" name="ttsSpeedTgt" min="0.30" max="4.0" step="0.1" value="1"/>
+                                            <br>TTS reading speed rate  (left flashcard): <input class="form-control" type="number" id="ttsSpeedSrc" name="ttsSpeedSrc" min="0.30" max="4.0" step="0.1" value="1" style="width:200px"/>
+                                            TTS reading speed rate (right flashcard): <input class="form-control" type="number" id="ttsSpeedTgt" name="ttsSpeedTgt" min="0.30" max="4.0" step="0.1" value="1" style="width:200px"/>
+                                            <div style="font-size:12px;color:grey">Supported TTS languages: English, German, Dutch, Spanish, Portuguese, French, Italian, Polish, Russian, Hindi, Chinese, Japanese, Korean, Indonesian.</div>
                                         </div>
                                     </div>
                                 </div>
