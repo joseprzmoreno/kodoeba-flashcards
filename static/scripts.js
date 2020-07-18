@@ -73,8 +73,8 @@ $(document).ready(function () {
             $('#useTts').prop('checked', false);
         }
 
-        var params = ["language1", "language2", "flashcardsNum", "autSpeed1", "autSpeed2","trans12Speed", "transpSpeed"];
-        var defaults = ["eng", "spa", "50", "71.42", "85.70", true, "2", "4"];
+        var params = ["language1", "language2", "flashcardsNum", "autSpeed1", "autSpeed2","trans12Speed", "transpSpeed", "ttsSpeedRate"];
+        var defaults = ["eng", "spa", "50", "71.42", "85.70", "2", "4", "1"];
 
         for (var i = 0; i < params.length; i++)
         {
@@ -191,7 +191,22 @@ $(document).ready(function () {
     function speak(language, txt) {
     	 voices = synth.getVoices();
          var u = new SpeechSynthesisUtterance(txt);
-         u.rate = 1.3;
+
+         var speedRate = $('#ttsSpeedRate').val();
+         if (speedRate==undefined)
+         {
+           speedRate = 1;
+         }
+         if (speedRate > 4.0)
+         {
+           speedRate = 4.0;
+         }
+         if (speedRate < 0.25)
+         {
+           speedRate = 0.25;
+         }
+         u.rate = speedRate;
+
     	 for (i=0;i<voices.length;i++) {
     		if (voices[i].lang == language) {
     			u.voice = voices[i];
@@ -312,6 +327,16 @@ $(document).ready(function () {
     $('input:radio[name="transp"]').change(function ()
     {
         localStorage.transp = $('input[name=transp]:checked').val();
+    });
+
+    $('#ttsSpeedRate').mouseup(function ()
+    {
+        localStorage.ttsSpeedRate = $('#ttsSpeedRate').val();
+    });
+
+    $('#ttsSpeedRate').keyup(function ()
+    {
+        localStorage.ttsSpeedRate = $('#ttsSpeedRate').val();
     });
 
     function getAvailableLanguages(srcLang)
