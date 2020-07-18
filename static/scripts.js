@@ -175,15 +175,18 @@ $(document).ready(function () {
         return {"validates": validates, "errorMessage": errorMessage};
     }
 
-    //standardized apostrophe (otherwise it causes an error in speech synthesis)
+    //standardized apostrophe and quotes (otherwise it causes an error in speech synthesis)
     function sanitizeApostrophe(text)
     {
     		var sign = "'";
         var signHtml = "&#39;";
+        var quotes = "&#34;";
     		var re = new RegExp(sign, "g");
         var re2 = new RegExp(signHtml, "g");
+        var re3 = new RegExp(quotes, "g");
         text = text.replace(re, "’");
         text = text.replace(re2, "’");
+        text = text.replace(re3, '"');
         return text;
     }
 
