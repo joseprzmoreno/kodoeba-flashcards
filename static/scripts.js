@@ -73,8 +73,8 @@ $(document).ready(function () {
             $('#useTts').prop('checked', false);
         }
 
-        var params = ["language1", "language2", "flashcardsNum", "autSpeed1", "autSpeed2","trans12Speed", "transpSpeed", "ttsSpeedRate"];
-        var defaults = ["eng", "spa", "50", "71.42", "85.70", "2", "4", "1"];
+        var params = ["language1", "language2", "flashcardsNum", "autSpeed1", "autSpeed2","trans12Speed", "transpSpeed", "ttsSpeedSrc", "ttsSpeedTgt"];
+        var defaults = ["eng", "spa", "50", "71.42", "85.70", "2", "4", "1", "1"];
 
         for (var i = 0; i < params.length; i++)
         {
@@ -191,11 +191,10 @@ $(document).ready(function () {
     }
 
     //function that generates speech synthesis (web speech api)
-    function speak(language, txt) {
+    function speak(language, txt, speedRate) {
     	 voices = synth.getVoices();
          var u = new SpeechSynthesisUtterance(txt);
 
-         var speedRate = $('#ttsSpeedRate').val();
          if (speedRate==undefined)
          {
            speedRate = 1;
@@ -332,14 +331,24 @@ $(document).ready(function () {
         localStorage.transp = $('input[name=transp]:checked').val();
     });
 
-    $('#ttsSpeedRate').mouseup(function ()
+    $('#ttsSpeedSrc').mouseup(function ()
     {
-        localStorage.ttsSpeedRate = $('#ttsSpeedRate').val();
+        localStorage.ttsSpeedSrc = $('#ttsSpeedSrc').val();
     });
 
-    $('#ttsSpeedRate').keyup(function ()
+    $('#ttsSpeedSrc').keyup(function ()
     {
-        localStorage.ttsSpeedRate = $('#ttsSpeedRate').val();
+        localStorage.ttsSpeedSrc = $('#ttsSpeedSrc').val();
+    });
+
+    $('#ttsSpeedTgt').mouseup(function ()
+    {
+        localStorage.ttsSpeedTgt = $('#ttsSpeedTgt').val();
+    });
+
+    $('#ttsSpeedSrc').keyup(function ()
+    {
+        localStorage.ttsSpeedTgt = $('#ttsSpeedTgt').val();
     });
 
     function getAvailableLanguages(srcLang)
@@ -643,14 +652,16 @@ $(document).ready(function () {
             if (whichFlashcard == 'left-flashcard')
             {
                 var language = language1;
+                var speed = $('#ttsSpeedSrc').val();
             }
             else
             {
                 var language = language2;
+                var speed = $('#ttsSpeedTgt').val();
             }
 
             var languageChr = langVoices[langsWithAudio.indexOf(language)];
-            speak(languageChr, sanitizeApostrophe(txt));
+            speak(languageChr, sanitizeApostrophe(txt), speed);
         }
 
     }
