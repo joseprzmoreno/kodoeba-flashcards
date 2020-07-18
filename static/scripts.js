@@ -2,6 +2,28 @@
 $(document).ready(function () {
 
     timeouts = [];
+    mustReadAloud = $('#useTts').prop('checked');
+
+    function detectIfMustReadAloud()
+    {
+      var language1 = $('#language1').val();
+      var language2 = $('#language2').val();
+      if (mustReadAloud && langsWithAudio.includes(language1) && langsWithAudio.includes(language2) && isChrome)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    //global variables for audio
+    var synth = window.speechSynthesis;
+    var voices = [];
+    var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    var langsWithAudio = ["spa","por","fra","ita","eng","deu","rus","hin","cmn","ind","jpn","kor","pol","nld"]; //id,jp,ko,nl,pl
+    var langVoices = ["es-US","pt-BR","fr-FR","it-IT","en-US","de-DE","ru-RU","hi-IN","zh-CN","id-ID","ja-JP","ko-KR","pl-PL","nl-NL"];
 
     $('.transition-radio-group').hide();
     $('#transition-box-1').hide();
@@ -40,6 +62,15 @@ $(document).ready(function () {
         else
         {
             $('#allTransitionsAutomatic').prop('checked', true);
+        }
+
+        if (localStorage.useTts == 1)
+        {
+            $('#useTts').prop('checked', true);
+        }
+        else
+        {
+            $('#useTts').prop('checked', false);
         }
 
         var params = ["language1", "language2", "flashcardsNum", "autSpeed1", "autSpeed2","trans12Speed", "transpSpeed"];
@@ -143,6 +174,36 @@ $(document).ready(function () {
 
         return {"validates": validates, "errorMessage": errorMessage};
     }
+
+    //standardized apostrophe (otherwise it causes an error in speech synthesis)
+    function sanitizeApostrophe(text)
+    {
+    		var sign = "'";
+        var signHtml = "&#39;";
+    		var re = new RegExp(sign, "g");
+        var re2 = new RegExp(signHtml, "g");
+        text = text.replace(re, "’");
+        text = text.replace(re2, "’");
+        return text;
+    }
+
+    //function that generates speech synthesis (web speech api)
+    function speak(language, txt) {
+    	 voices = synth.getVoices();
+         var u = new SpeechSynthesisUtterance(txt);
+         u.rate = 1.3;
+    	 for (i=0;i<voices.length;i++) {
+    		if (voices[i].lang == language) {
+    			u.voice = voices[i];
+    			break;
+    		}
+    	 }
+         synth.speak(u);
+         u.onend = function(event) {
+             $('#btn_next').click();
+         }
+    }
+
 
     //populate selects
     $.ajax(
@@ -294,7 +355,6 @@ $(document).ready(function () {
         var TBPSeconds = $('#transpSpeed').val();
         var totalTime = (TBPSeconds * 1000 * (sentencePairs.length + 1) + TBFSeconds * 1000);
 
-
         if (automatic)
         {
             totalTime = 0;
@@ -305,52 +365,88 @@ $(document).ready(function () {
 
         if (automatic)
         {
-            $('#btn_next').prop('disabled', true);
-            $('#transition-box-1').hide();
+          if (!detectIfMustReadAloud())
+          {
 
-            var transitionsBetweenFlashcards = [];
-            var transitionsBetweenPairs = [0];
-            var accumulatedTime = 0;
+              $('#btn_next').prop('disabled', true);
+              $('#transition-box-1').hide();
 
-            for (var i = 0; i < sentencePairs.length; i++)
+              var transitionsBetweenFlashcards = [];
+              var transitionsBetweenPairs = [0];
+              var accumulatedTime = 0;
+
+              for (var i = 0; i < sentencePairs.length; i++)
+              {
+                  var sentencePair = sentencePairs[i];
+                  var transitionBF = Math.ceil(automaticSpeed1 * sentencePair[0].length);
+
+                  //set a minimum time
+                  if (transitionBF < 600)
+                  {
+                      transitionBF = 600;
+                  }
+
+                  accumulatedTime += transitionBF;
+                  transitionsBetweenFlashcards.push(accumulatedTime);
+
+                  var transitionBP = Math.ceil(automaticSpeed2 * sentencePair[1].length);
+                  if (transitionBP < 600)
+                  {
+                      transitionBP = 600;
+                  }
+                  accumulatedTime += transitionBP;
+                  transitionsBetweenPairs.push(accumulatedTime);
+
+                  totalTime += transitionBF + transitionBP;
+              }
+
+              for (var i = 0; i < sentencePairs.length; i++)
+              {
+                  var sentencePair = sentencePairs[i];
+                  eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePair[0]) + "','left-flashcard')}," + (transitionsBetweenPairs[i]) + "));");
+                  eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePair[1]) + "','right-flashcard')}," + (transitionsBetweenFlashcards[i]) + "));");
+                  if (i < (sentencePairs.length - 1))
+                  {
+                      eval("timeouts.push(setTimeout(function(){showFlashcard('','right-flashcard')}," + (transitionsBetweenPairs[i + 1]) + "));");
+                  }
+              }
+              timeouts.push(setTimeout(function ()
+              {
+                  normalize()
+              }, totalTime));
+          }
+          else
+          {
+            $('#btn_next').prop('disabled', false);
+            var nextPair = 0;
+            nextPlace = "left-flashcard";
+
+            $('#btn_next').click(function (e)
             {
-                var sentencePair = sentencePairs[i];
-                var transitionBF = Math.ceil(automaticSpeed1 * sentencePair[0].length);
-
-                //set a minimum time
-                if (transitionBF < 600)
+                e.preventDefault();
+                if (nextPair >= sentencePairs.length)
                 {
-                    transitionBF = 600;
+                    normalize();
                 }
-
-                accumulatedTime += transitionBF;
-                transitionsBetweenFlashcards.push(accumulatedTime);
-
-                var transitionBP = Math.ceil(automaticSpeed2 * sentencePair[1].length);
-                if (transitionBP < 600)
+                else
                 {
-                    transitionBP = 600;
+                    if (nextPlace == "left-flashcard")
+                    {
+                          showFlashcard(escape(sentencePairs[nextPair][0]), 'left-flashcard');
+                          $('#right-flashcard').html('');
+                    }
+                    else
+                    {
+                        showFlashcard(escape(sentencePairs[nextPair][1]), 'right-flashcard');
+                        nextPair++;
+                    }
+                    nextPlace = changePlace();
                 }
-                accumulatedTime += transitionBP;
-                transitionsBetweenPairs.push(accumulatedTime);
+             });
 
-                totalTime += transitionBF + transitionBP;
-            }
+             $('#btn_next').click();
 
-            for (var i = 0; i < sentencePairs.length; i++)
-            {
-                var sentencePair = sentencePairs[i];
-                eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePair[0]) + "','left-flashcard')}," + (transitionsBetweenPairs[i]) + "));");
-                eval("timeouts.push(setTimeout(function(){showFlashcard('" + escape(sentencePair[1]) + "','right-flashcard')}," + (transitionsBetweenFlashcards[i]) + "));");
-                if (i < (sentencePairs.length - 1))
-                {
-                    eval("timeouts.push(setTimeout(function(){showFlashcard('','right-flashcard')}," + (transitionsBetweenPairs[i + 1]) + "));");
-                }
-            }
-            timeouts.push(setTimeout(function ()
-            {
-                normalize()
-            }, totalTime));
+           }
         }
         else
         {
@@ -500,6 +596,26 @@ $(document).ready(function () {
     function showFlashcard(txt, whichFlashcard)
     {
         $('#' + whichFlashcard).html(txt);
+
+        if (detectIfMustReadAloud())
+        {
+
+            var language1 = $('#language1').val();
+            var language2 = $('#language2').val();
+
+            if (whichFlashcard == 'left-flashcard')
+            {
+                var language = language1;
+            }
+            else
+            {
+                var language = language2;
+            }
+
+            var languageChr = langVoices[langsWithAudio.indexOf(language)];
+            speak(languageChr, sanitizeApostrophe(txt));
+        }
+
     }
 
     function normalize()
@@ -544,6 +660,20 @@ $(document).ready(function () {
         {
             localStorage.allTransitionsAutomatic = 0;
             $('.transition-radio-group').show();
+        }
+    });
+
+    $('#useTts').click(function (e)
+    {
+        if ($(this).prop('checked'))
+        {
+            mustReadAloud = true;
+            localStorage.useTts = 1;
+        }
+        else
+        {
+            mustReadAloud = false;
+            localStorage.useTts = 0;
         }
     });
 
