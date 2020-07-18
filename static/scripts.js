@@ -346,7 +346,7 @@ $(document).ready(function () {
         localStorage.ttsSpeedTgt = $('#ttsSpeedTgt').val();
     });
 
-    $('#ttsSpeedSrc').keyup(function ()
+    $('#ttsSpeedTgt').keyup(function ()
     {
         localStorage.ttsSpeedTgt = $('#ttsSpeedTgt').val();
     });
