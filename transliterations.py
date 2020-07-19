@@ -1,8 +1,10 @@
 from transliterate import translit
 import pinyin
+from hangul_romanize import Transliter
+from hangul_romanize.rule import academic
 
 def has_transliteration(tat_code):
-    codes = ["hye","ell","kat","rus","cmn"]
+    codes = ["hye","ell","kat","rus","cmn","kor"]
     if tat_code in codes:
         return True
     return False
@@ -26,10 +28,16 @@ def get_pinyin(txt):
         txt2 += character + " "
     return pinyin.get(txt2)
 
+def get_hangul(txt):
+    transliter = Transliter(academic)
+    return transliter.translit(txt)
+
 def get_transliteration(tat_lang, txt):
     if tat_lang in ["hye","ell","kat","rus"]:
         tr_lang = get_translit_lang_code(tat_lang)
         return translit(txt, tr_lang, reversed=True)
     elif tat_lang == "cmn":
         return get_pinyin(txt)
+    elif tat_lang == "kor":
+        return get_hangul(txt)
     return ""
