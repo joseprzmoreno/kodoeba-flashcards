@@ -9,7 +9,7 @@
   background-color: white;
 }
 
-#accordion-controls *
+#accordion-controls
 {
   font-size: 16px;
 }
@@ -81,6 +81,11 @@ text-align: center;
 .sentence
 {
    font-size: 30px;
+}
+
+textarea
+{
+  font-family: 'Courier New';
 }
 
 .transition-box

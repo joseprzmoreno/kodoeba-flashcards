@@ -25,8 +25,30 @@ def fetch_all(sql):
     ress = cur.fetchall()
     cur.close()
     return ress
-    
-def get_random_sentence_pairs(src, tgt, num):
+
+def process_word_string(txt):
+    words = []
+    chunks = txt.split(",")
+    for chunk in chunks:
+        word = chunk.strip()
+        if len(word)>2 and word[0]=='/' and word[-1]=='/':
+            word = word[1:-1]
+        word = word.replace("'","''")
+        words.append(word)
+    return words
+
+def build_extra_sql_for_required_words(words, is_src_or_tgt):
+    sql = " AND ( "
+    chunks = []
+    for word in words:
+        if word != '':
+            chunks.append(" {}.sentence REGEXP '[[:<:]]{}[[:>:]]'".format(is_src_or_tgt, word))
+    if len(chunks)==0:
+        return ""
+    sql += " OR ".join(chunks) + " ) "
+    return sql
+   
+def get_random_sentence_pairs(src, tgt, num, include_words_src='', include_words_tgt=''):
     sql = """SELECT src.sentence srcsentence, tgt.sentence tgtsentence
 FROM sentences src
 JOIN links l ON src.id = l.src_id 
@@ -34,8 +56,15 @@ JOIN sentences tgt ON l.tgt_id = tgt.id
 WHERE src.lang = '{}' AND tgt.lang = '{}'
 AND CHAR_LENGTH(src.sentence) <= 70
 AND CHAR_LENGTH(tgt.sentence) <= 70
-ORDER BY RAND() LIMIT {}
-""".format(src,tgt,num)
+""".format(src,tgt)
+
+    if include_words_src != None and include_words_src != '':
+        sql += build_extra_sql_for_required_words(process_word_string(include_words_src), 'src')
+    if include_words_tgt != None and include_words_tgt != '':
+        sql += build_extra_sql_for_required_words(process_word_string(include_words_tgt), 'tgt')
+
+    sql += " ORDER BY RAND() LIMIT {}".format(num)
+    
     results = fetch_all(sql)
     translations = []
     for result in results:
@@ -89,9 +118,13 @@ def random_sentences_default(src, tgt):
 
 @app.route('/api/randomsentences/0/<src>/<tgt>/<num>', methods=['GET','POST'])
 def random_sentences(src, tgt, num):
+    #raise ValueError('A very specific bad thing happened.')
+    #return
     if not represents_int(num) or int(num) < 1 or int(num) > 100:
-        raise InvalidUsage('Number of sentences must be a number between 1 and 50', status_code=412) 
-    sentence_pairs = get_random_sentence_pairs(src, tgt, int(num))
+        raise InvalidUsage('Number of sentences must be a number between 1 and 50', status_code=412)
+    include_words_left = request.form.get('includeWordsLeft', '')
+    include_words_right = request.form.get('includeWordsRight', '')
+    sentence_pairs = get_random_sentence_pairs(src, tgt, int(num), include_words_left, include_words_right)
     return json.dumps(sentence_pairs, ensure_ascii=False)
 
 @app.route('/get_languages', methods=['GET','POST'])

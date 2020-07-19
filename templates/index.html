@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Kodoeba Flashcards App</title>
+
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
         <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
@@ -56,7 +57,7 @@
                 <div class="container">
                     <div class="card-header" id="headingOne">
                         <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <button id="btn-collapse" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                 Controls (click to show/hide)
                             </button>
                         </h5>
@@ -148,6 +149,20 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row">
+                                    <div class="col-sm-2">Special conditions</div>
+                                    <div class="col-sm-10">
+                                        <div style="font-size:13px">&nbsp;&nbsp;&nbsp;&nbsp;Include only left flashcards with any of the following words or <a style="font-size:14px" href="https://regexone.com/" target="_blank">regular expressions</a>
+                                        (separate by commas without spaces, use // for regex)</div>
+                                        <textarea class="form-control" id="includeWordsLeft"></textarea>
+                                        <br>
+                                        <div style="font-size:13px">&nbsp;&nbsp;&nbsp;&nbsp;Include only right flashcards with any of the following words or <a style="font-size:14px" href="https://regexone.com/" target="_blank">regular expressions</a>
+                                        (separate by commas without spaces, use // for regex)</div>
+                                        <textarea class="form-control" id="includeWordsRight"></textarea>
+                                        <div style="font-size:12px;color:grey">*Only full words are taken into account. Regex power example: if you wish to ricover all words starting with 'inter', use /inter(.)*/
+                                    </div>
+                                </div>
+
                             </form>
 
                         </div>
@@ -205,8 +220,9 @@
           challenge of
           <a href="https://tatoeba.org" target="_blank">Tatoeba</a>
           in 2020.<br>. Code is stored
-          <a href="https://github.com/joseprzmoreno/kodoeba-flashcards" target="_blank">here</a>.
-          The localstorage of your browser is used for saving your preferences.<br><br>
+          <a href="https://github.com/joseprzmoreno/kodoeba-flashcards" target="_blank">in Github</a>.
+          Please if you re-use or modify this project mention Tatoeba and the Github repo/author (thanks).
+          <br>The localstorage of your browser is used for saving your preferences.<br><br>
         </div>
     </body>
 </html>

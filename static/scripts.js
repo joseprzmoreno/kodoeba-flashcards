@@ -3,6 +3,7 @@ $(document).ready(function () {
 
     timeouts = [];
     mustReadAloud = $('#useTts').prop('checked');
+    request = undefined;
 
     function detectIfMustReadAloud()
     {
@@ -43,6 +44,10 @@ $(document).ready(function () {
         $("#loading").show();
         $('#flashcards-container').hide();
     }).ajaxStop(function ()
+    {
+        $("#loading").hide();
+        $('#flashcards-container').show();
+    }).ajaxError(function ()
     {
         $("#loading").hide();
         $('#flashcards-container').show();
@@ -697,6 +702,11 @@ $(document).ready(function () {
         }
     }
 
+    function showNoSentencesMessage()
+    {
+        notify('There are no sentence pairs for those criteria.','warning');
+    }
+
     $('#allTransitionsAutomatic').click(function (e)
     {
         if ($(this).prop('checked'))
@@ -740,6 +750,10 @@ $(document).ready(function () {
     {
 
         e.preventDefault();
+        if ($('#collapseOne').is(":visible"))
+        {
+          $('#btn-collapse').click();
+        }
         $('.flashcard').html('');
 
         for (var i = 0; i < timeouts.length; i++)
@@ -759,16 +773,29 @@ $(document).ready(function () {
         var language1 = $('#language1').val();
         var language2 = $('#language2').val();
         var numFlashcards = parseInt($('#flashcardsNum').val());
+        var includeWordsLeft = $('#includeWordsLeft').val();
+        var includeWordsRight = $('#includeWordsRight').val();
 
         //get sentence pairs
-        $.ajax(
+        request = $.ajax(
         {
             url: "api/randomsentences/0/" + language1 + "/" + language2 + "/" + numFlashcards,
             type: "POST",
             cache: false,
             dataType: "json",
+            data: {
+              'includeWordsLeft': includeWordsLeft,
+              'includeWordsRight': includeWordsRight
+            },
             success: function (sentencePairs) {
-                showFlashcards(sentencePairs)
+              if (sentencePairs.length > 0)
+              {
+                  showFlashcards(sentencePairs)
+              }
+              else
+              {
+                  showNoSentencesMessage();
+              }
             },
             error: function (xhr, status, error) {
                 var err = eval("(" + xhr.responseText + ")");
@@ -782,7 +809,8 @@ $(document).ready(function () {
     if ($('#allTransitionsAutomatic').prop('checked') === true)
     {
         $('.transition-radio-group').hide();
-    } else
+    }
+    else
     {
         $('.transition-radio-group').show();
     }
