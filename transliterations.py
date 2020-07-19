@@ -3,9 +3,10 @@ import pinyin
 from hangul_romanize import Transliter
 from hangul_romanize.rule import academic
 from pykakasi import kakasi,wakati
+from lang_trans.arabic import buckwalter
 
 def has_transliteration(tat_code):
-    codes = ["hye","ell","kat","rus","cmn","kor","jpn"]
+    codes = ["hye","ell","kat","rus","cmn","kor","jpn","ara"]
     if tat_code in codes:
         return True
     return False
@@ -45,6 +46,9 @@ def get_romaji(txt):
     result = conv.do(txt)
     return result
 
+def get_arabic_transliteration(txt):
+    return buckwalter.transliterate(txt)
+
 def get_transliteration(tat_lang, txt):
     if tat_lang in ["hye","ell","kat","rus"]:
         tr_lang = get_translit_lang_code(tat_lang)
@@ -55,4 +59,6 @@ def get_transliteration(tat_lang, txt):
         return get_hangul(txt)
     elif tat_lang == "jpn":
         return get_romaji(txt)
+    elif tat_lang == "ara":
+        return get_arabic_transliteration(txt)
     return ""
