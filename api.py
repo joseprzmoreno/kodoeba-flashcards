@@ -53,7 +53,7 @@ def get_random_sentence_pairs(src, tgt, num, include_words_src='', include_words
 FROM sentences src
 JOIN links l ON src.id = l.src_id 
 JOIN sentences tgt ON l.tgt_id = tgt.id 
-WHERE src.lang = '{}' AND tgt.lang = '{}'
+WHERE l.src_lang = '{}' AND l.tgt_lang = '{}'
 AND CHAR_LENGTH(src.sentence) <= 70
 AND CHAR_LENGTH(tgt.sentence) <= 70
 """.format(src,tgt)
