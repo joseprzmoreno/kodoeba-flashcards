@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS tatoebakrs;
+
 CREATE DATABASE tatoebakrs CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE tatoebakrs;

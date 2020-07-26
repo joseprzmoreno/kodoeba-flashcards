@@ -110,7 +110,6 @@ $(document).ready(function () {
                   $('#' + params[i] + "Seconds").prop('checked', true);
             }
         }
-
     }
 
     function sortLanguages(arr)
@@ -713,11 +712,15 @@ $(document).ready(function () {
         {
             localStorage.allTransitionsAutomatic = 1;
             $('.transition-radio-group').hide();
+            $('#tts_box').show();
+            $('#useTts').prop('checked', true);
         }
         else
         {
             localStorage.allTransitionsAutomatic = 0;
             $('.transition-radio-group').show();
+            $('#tts_box').hide();
+            $('#useTts').prop('checked', false);
         }
     });
 
@@ -809,11 +812,16 @@ $(document).ready(function () {
     if ($('#allTransitionsAutomatic').prop('checked') === true)
     {
         $('.transition-radio-group').hide();
+        $('#tts_box').show();
+        $('#useTts').prop('checked', true);
     }
     else
     {
         $('.transition-radio-group').show();
+        $('#tts_box').hide();
+        $('#useTts').prop('checked', false);
     }
+
 
 
 });
