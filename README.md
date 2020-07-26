@@ -11,13 +11,13 @@ user = YOUR_MYSQL_USER
 password = YOUR_MYSQL_PASSWORD
 ```
 - Create mysql database. In shell, run (replacing USER with your mysql user):
-```mysql -u USER -p &lt; db_create.sql```
+```mysql -u USER -p < db_create.sql```
 - Create the directory ~/tatoeba for downloading files, or edit line "downloadsdirectory=..." in the file tatoeba.sh.
 - Populate database with tatoeba sentences. Executing bash file tatoeba.sh will do the job (you'll be required to enter your mysql password). Otherwise, you need to follow these steps:
   - Download and uncompress sentences.csv and links.csv from tatoeba downloads page: https://downloads.tatoeba.org
   - Using tatoebakrs database, run these two instructions:
-    ```LOAD DATA LOCAL INFILE 'sentences.csv' INTO TABLE sentences FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' (id, lang, sentence);
-    LOAD DATA LOCAL INFILE 'links.csv' INTO TABLE links FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' (src_id, tgt_id);```
+    ```LOAD DATA LOCAL INFILE 'sentences.csv' INTO TABLE sentences FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' (id, lang, sentence);```
+    ```LOAD DATA LOCAL INFILE 'links.csv' INTO TABLE links FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' (src_id, tgt_id);```
 The files load process can take a few minutes.
 - In shell, run: mysql -u USER -p &lt; db_postprocessing.sql (this adds some changes to the database to improve performance. This can take up to 25-30 minutes, please be patient.
 - Activate python virtual environment. In the directory of the app:
