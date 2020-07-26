@@ -1,5 +1,7 @@
 # KODOEBA/TATOEBA FLASHCARDS APPLICATION
 
+This is a project made for Kodoeba challenge 2020: https://blog.tatoeba.org/2020/05/kodoeba-1-participants.html
+
 You'll need to have Python 3 installed and mysql, as well as Python Virtual Environment.
 The following instructions are best suited to Linux.
 
