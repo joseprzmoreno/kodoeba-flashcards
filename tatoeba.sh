@@ -1,6 +1,6 @@
 #!/bin/bash
 deletecommand="truncate table tatoebakrs.links;truncate table tatoebakrs.sentences;"
-downloadsdirectory="/home/tatoeba"
+downloadsdirectory="~/tatoeba"
 sentenceslink="https://downloads.tatoeba.org/exports/sentences.tar.bz2"
 linkslink="https://downloads.tatoeba.org/exports/links.tar.bz2"
 sentencesfile="sentences.tar.bz2"
