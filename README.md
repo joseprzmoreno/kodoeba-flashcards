@@ -27,6 +27,6 @@ The files load process can take a few minutes.
 - Execute api.py. In shell: ```python api.py```
 - In a browser or Postman, launch: ```http://localhost:5000/api/randomsentences/0/eng/ell/50``` (if you use Google Chrome, I recommend adding extension JSONView). 
 - In order to use the flashcards web page included, it is necessary to have a pre-loaded list of languages indicating which target languages are available for each one of them. The file is included in the repository, but if you want to generate it, so it is well updated, run: ```http://localhost:5000/get_available_languages_list``` (the process can take about ten minutes to complete). 
-- To use the flashcards web page, run: ```http://localhost:5000``` . You can try exploring and changing controls. For languages with more sentences, it can take a few seconds to get the sentences. Anyone is invited to explore further solutions to improve mysql performance of the project.
+- To use the flashcards web page, run: ```http://localhost:5000``` . You can try exploring and changing controls. I recommend using Google Chrome to have text-to-speech for 14 languages. For languages with more sentences, it can take a few seconds to get the sentences. Anyone is invited to explore further solutions to improve mysql performance of the project.
 - Deactivate virtual environment: ```deactivate```
 
