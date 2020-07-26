@@ -13,7 +13,7 @@ password = YOUR_MYSQL_PASSWORD
 - Create mysql database. In shell, run (replacing USER with your mysql user):
 ```mysql -u USER -p < db_create.sql```
 - Create the directory ~/tatoeba for downloading files, or edit line "downloadsdirectory=..." in the file tatoeba.sh.
-- Populate database with tatoeba sentences. Executing bash file ```tatoeba.sh``` will do the job (you'll be required to enter your mysql password). Otherwise, you need to follow these steps:
+- Populate database with tatoeba sentences. Executing bash file tatoeba.sh (```./tatoeba.sh```) will do the job in Linux (you'll be required to enter your mysql password). Otherwise, you need to follow these steps:
   - Download and uncompress sentences.csv and links.csv from tatoeba downloads page: https://downloads.tatoeba.org
   - Using tatoebakrs database, run these two instructions:
     ```LOAD DATA LOCAL INFILE 'sentences.csv' INTO TABLE sentences FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' (id, lang, sentence);```
