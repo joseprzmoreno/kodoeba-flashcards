@@ -9,7 +9,7 @@ Jinja2==2.11.2
 klepto==0.1.9
 lang-trans==0.6.0
 MarkupSafe==1.1.1
-numpy==1.18.5
+numpy==1.21.5
 pinyin==0.4.0
 pox==0.2.8
 pykakasi==2.0.0

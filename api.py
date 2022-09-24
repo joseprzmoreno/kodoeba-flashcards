@@ -42,7 +42,7 @@ def build_extra_sql_for_required_words(words, is_src_or_tgt):
     chunks = []
     for word in words:
         if word != '':
-            chunks.append(" {}.sentence REGEXP '[[:<:]]{}[[:>:]]'".format(is_src_or_tgt, word))
+            chunks.append(" {}.sentence REGEXP '\\b{}\\b'".format(is_src_or_tgt, word))
     if len(chunks)==0:
         return ""
     sql += " OR ".join(chunks) + " ) "

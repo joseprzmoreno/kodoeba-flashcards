@@ -28,7 +28,7 @@ tar -xvf "$sentencesfile"
 tar -xvf "$linksfile"
 
 echo "Loading files to database"
-/usr/bin/mysql -u root -p tatoebakrs << eof
+/usr/bin/mysql --local-infile=1 -u root -p tatoebakrs << eof
 
 $sentencesload
 $linksload
