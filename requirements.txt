@@ -5,7 +5,7 @@ Flask==1.1.2
 Flask-Assets==2.0
 hangul-romanize==0.1.0
 itsdangerous==1.1.0
-Jinja2==2.11.2
+Jinja2==2.11.3
 klepto==0.1.9
 lang-trans==0.6.0
 MarkupSafe==1.1.1
